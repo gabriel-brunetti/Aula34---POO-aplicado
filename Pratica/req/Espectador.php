@@ -19,7 +19,7 @@ class Espectador {
 		$db = new DB();
 
 		// Definir a string da consulta
-		$sql = "SELECT id FROM usuarios WHERE email=:email";
+		$sql = "SELECT * FROM usuarios WHERE email=:email";
 
 		// Preparo a consulta;
 		$select = $db->prepare($sql);
@@ -33,9 +33,9 @@ class Espectador {
 
 		// Leio o resultado
 		$result = $select->fetch(PDO::FETCH_ASSOC);
-		
-		// Retornando com base no resultado
-		if($result){
+		var_dump($result);
+
+		if(password_verify($senha, $result['senha'])) {
 			$this->logado = true;
 			return true;
 		} else {
