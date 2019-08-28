@@ -1,3 +1,29 @@
+<?php
+	// incluindo dependências
+	include('./req/DB.php');
+	include('./req/Espectador.php');
+	include('./req/Usuarios.php');
+
+	// iniciar a session
+	session_start();
+
+	// Verificar existência da session usuário
+	if($_SESSION['usuario']){
+
+		// Usuário existente. Recuperando o usuário
+		$u = unserialize($_SESSION['usuario']);	
+
+		// Ler as mensagens
+		$mensagens = $u->lerMensagens();
+
+	} else {
+
+		// Usuário não existe. matando o script.
+		die();
+	}
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -50,21 +76,15 @@
 </head>
 <body>
 
-	<div class="msg propria">
-		<div>
-			<div class="email">teste@teste.com</div>
-			<div class="hora">09:35</div>
-			<div class="texto">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloremque est ex dolorum cumque molestias aut iusto deserunt, nemo exercitationem qui ex.</div>
-		</div>
+	<?php foreach($mensagens as $m): ?>
+	<div class="msg <?= ($m['email'] == $u->getEmail()) ? 'propria' : 'alheia' ; ?>">
+			<div>
+				<div class="email"><?= $m['email'] ?></div>
+				<div class="hora"><?= date('H:i',strtotime($m['hora'])); ?></div>
+				<div class="texto"><?= utf8_encode($m['texto'])?> </div>
+			</div>
 	</div>
-
-	<div class="msg alheia">
-		<div>
-			<div class="email">teste@teste.com</div>
-			<div class="hora">09:35</div>
-			<div class="texto">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloremque est ex dolorum cumque molestias aut iusto deserunt, nemo exercitationem qui ex.</div>
-		</div>
-	</div>
+	<?php endforeach; ?>
 	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 	<script>
